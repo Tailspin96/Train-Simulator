@@ -1,21 +1,14 @@
 package com.trains.utils.lang;
 
 import java.text.MessageFormat;
-import java.util.List;
-import java.util.Locale;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public final class I18N {
-
-	private static Locale locale;
+	public static final Set<Locale> availableLocales = Set.of(Locale.of("en", "AU"));
 	private static final List<Runnable> listeners = new CopyOnWriteArrayList<>();
-	public static final Set<Locale> availableLocales = Set.of(
-			Locale.of("en", "AU")
-	);
 	private static final Locale defaultLocale = Locale.of("en", "AU");
+	private static Locale locale;
 
 	static {
 		locale = getDefaultLocale();
@@ -42,7 +35,6 @@ public final class I18N {
 		for (Runnable listener : listeners) {
 			listener.run();
 		}
-
 	}
 
 	public static void addListener(Runnable listener) {
@@ -61,5 +53,4 @@ public final class I18N {
 			return key;
 		}
 	}
-
 }

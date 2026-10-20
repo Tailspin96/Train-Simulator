@@ -2,21 +2,13 @@ package com.trains.ui.gui;
 
 import com.trains.utils.lang.I18N;
 
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JToggleButton;
-import javax.swing.ScrollPaneConstants;
-import java.awt.Component;
-import java.awt.Dimension;
+import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class GUILanguage extends GUI {
-
 	public GUILanguage(JFrame frame, GUI previous) {
 		super(frame, previous);
 	}
@@ -49,7 +41,8 @@ public class GUILanguage extends GUI {
 		JScrollPane scrollPane = new JScrollPane(toggleHolder);
 		scrollPane.setBorder(null);
 		scrollPane.setOpaque(false);
-		scrollPane.getViewport().setOpaque(false);
+		scrollPane.getViewport()
+				  .setOpaque(false);
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		addMenuItems(scrollPane);

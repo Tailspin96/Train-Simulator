@@ -3,51 +3,54 @@ package com.trains.sim;
 import com.trains.network.Network;
 import com.trains.vehicles.Vehicle;
 
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public final class Simulation {
-    // Should hold the network and a list of vehicles, with a tick method that advances time.
-    private final Network network;
-    private final List<Vehicle> vehicles;
-    private final CargoSpawner cargoSpawner;
+	// Should hold the network and a list of vehicles, with a tick method that advances time.
+	private final Network network;
+	private final List<Vehicle> vehicles;
+	private final CargoSpawner cargoSpawner;
 
-    public Simulation() {
-        this(new Network(), new ArrayList<>());
-    }
+	public Simulation() {
+		this(new Network(), new ArrayList<>());
+	}
 
-    public Simulation(Network network) {
-        this(network, new ArrayList<>());
-    }
+	public Simulation(Network network) {
+		this(network, new ArrayList<>());
+	}
 
-    public Simulation(Network network, List<Vehicle> vehicles) {
-        this.network = network;
-        this.vehicles = vehicles;
-        this.cargoSpawner = new CargoSpawner(network);
-    }
+	public Simulation(Network network, List<Vehicle> vehicles) {
+		this.network = network;
+		this.vehicles = vehicles;
+		this.cargoSpawner = new CargoSpawner(network);
+	}
 
-    public Network getNetwork() {
-        return network;
-    }
-    public List<Vehicle> getVehicles() {
-        return Collections.unmodifiableList(vehicles);
-    }
+	public Network getNetwork() {
+		return network;
+	}
 
-    public void addVehicle(Vehicle vehicle) {
-        vehicles.add(vehicle);
-    }
+	public List<Vehicle> getVehicles() {
+		return Collections.unmodifiableList(vehicles);
+	}
 
-    public void removeVehicle(Vehicle vehicle) {
-        vehicles.remove(vehicle);
-    }
+	public void addVehicle(Vehicle vehicle) {
+		vehicles.add(vehicle);
+	}
 
-    /**
-     * Advances the simulation by one tick
-     * @param dt elapsed simulated time since last tick
-     */
-    public void tick(double dt) {
-        for ( Vehicle vehicle : vehicles) {
-            vehicle.update(dt);
-        }
-    }
+	public void removeVehicle(Vehicle vehicle) {
+		vehicles.remove(vehicle);
+	}
+
+	/**
+	 * Advances the simulation by one tick
+	 *
+	 * @param dt elapsed simulated time since last tick
+	 */
+	public void tick(double dt) {
+		for (Vehicle vehicle : vehicles) {
+			vehicle.update(dt);
+		}
+	}
 }

@@ -1,129 +1,134 @@
 package com.trains.sim;
-import com.trains.cargo.*;
-import com.trains.network.*;
-import java.util.Objects;
-import java.util.ArrayList;
+
+import com.trains.cargo.Cargo;
+import com.trains.cargo.CargoTransfer;
+import com.trains.network.Network;
+import com.trains.network.Station;
+
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 public final class CargoSpawner {
-    private final Network network;
+	private final Network network;
 
-    /**
-     * CargoSpawner constructor
-     * @param network The main network object
-     * @throws NullPointerException If network is null
-     */
-    public CargoSpawner(Network network) throws NullPointerException{
-        this.network = Objects.requireNonNull(network);
-    }
+	/**
+	 * CargoSpawner constructor
+	 *
+	 * @param network The main network object
+	 * @throws NullPointerException If network is null
+	 */
+	public CargoSpawner(Network network) throws NullPointerException {
+		this.network = Objects.requireNonNull(network);
+	}
 
+	/**
+	 * Spawns a Cargo of CargoType Passenger at the original Station heading toward it's destination
+	 *
+	 * @param origin      the station Passenger starts at
+	 * @param destination the station Passenger ends at
+	 * @return true if Passenger was added to the origin's CargoHold
+	 * @throws NullPointerException     if origin or destination is null
+	 * @throws IllegalArgumentException if origin and destination are at the same station
+	 *                                  or if either origin/destination's station doesn't belong to the spawner's network
+	 */
+	public boolean spawnPassenger(Station origin, Station destination) {
+		checkStations(origin, destination);
 
-    /**
-     * Spawns a Cargo of CargoType Passenger at the original Station heading toward it's destination
-     * 
-     * @param origin the station Passenger starts at
-     * @param destination the station Passenger ends at
-     * @return true if Passenger was added to the origin's CargoHold
-     * @throws NullPointerException if origin or destination is null
-     * @throws IllegalArgumentException if origin and destination are at the same station 
-     * or if either origin/destination's station doesn't belong to the spawner's network
-     */
-    public boolean spawnPassenger(Station origin, Station destination){
-        checkStations(origin, destination);
-        
-        Cargo passenger = Cargo.passenger(destination.getPos());
+		Cargo passenger = Cargo.passenger(destination.getPos());
 
-        return CargoTransfer.insertCargo(origin.getCargoHold(), passenger);
-    }
+		return CargoTransfer.insertCargo(origin.getCargoHold(), passenger);
+	}
 
-    /**
-     * Spawns a Cargo of CargoType Freight at the original Station heading toward it's destination
-     * @param origin the station Freight starts at
-     * @param destination the station Freight ends at
-     * @param units the number of freight units to spawn
-     * @return true if Freight was added to the origin's CargoHold
-     * @throws NullPointerException if origin or destination is null
-     * @throws IllegalArgumentException if origin and destination are at the same station 
-     * or if either origin/destination's station doesn't belong to the spawner's network
-     */
-    public boolean spawnFreight(Station origin, Station destination, int units) {
-        checkStations(origin, destination);
-        
-        Cargo freight = Cargo.freight(destination.getPos(), units);
+	/**
+	 * Spawns a Cargo of CargoType Freight at the original Station heading toward it's destination
+	 *
+	 * @param origin      the station Freight starts at
+	 * @param destination the station Freight ends at
+	 * @param units       the number of freight units to spawn
+	 * @return true if Freight was added to the origin's CargoHold
+	 * @throws NullPointerException     if origin or destination is null
+	 * @throws IllegalArgumentException if origin and destination are at the same station
+	 *                                  or if either origin/destination's station doesn't belong to the spawner's network
+	 */
+	public boolean spawnFreight(Station origin, Station destination, int units) {
+		checkStations(origin, destination);
 
-        return CargoTransfer.insertCargo(origin.getCargoHold(), freight);
-    }
-    /**
-     * Get all current stations in the network
-     * @return a list containing all the stations in the network
-     */
+		Cargo freight = Cargo.freight(destination.getPos(), units);
 
-    private List<Station> getStations(){
-        List<Station> stations = new ArrayList<>();
+		return CargoTransfer.insertCargo(origin.getCargoHold(), freight);
+	}
 
-        for(Node node: network.getNodes().values()){
-            if (node instanceof Station station){
-                stations.add(station);
-            }
-        }
+	/**
+	 * Get all current stations in the network
+	 *
+	 * @return a list containing all the stations in the network
+	 */
+	private List<Station> getStations() {
+		return network.getNodes()
+					  .values()
+					  .stream()
+					  .filter(Station.class::isInstance)
+					  .map(Station.class::cast)
+					  .toList();
+	}
 
-        return stations;
-    }
+	/**
+	 * Checks whether the station belongs to the spawner's network
+	 *
+	 *
+	 */
+	private boolean belongsToNetwork(Station station) {
+		return network.getNodes()
+					  .containsValue(station);
+	}
 
-    /**
-     * Checks whether the station belongs to the spawner's network
-     * 
-     *  */ 
-    private boolean belongsToNetwork(Station station) {
-        return network.getNodes().containsValue(station);
-    }
+	/**
+	 * Spawn the passenger using stations from that network
+	 *
+	 * @return true if the passenger was successfully spawned
+	 */
+	public boolean spawnPassenger() {
+		List<Station> stations = getStations();
 
-    /**
-     * Spawn the passenger using stations from that network
-     * @return true if the passenger was successfully spawned
-     */
-    public boolean spawnPassenger(){
-        List<Station> stations = getStations();
+		if (stations.size() < 2) {
+			return false;
+		}
 
-        if (stations.size() < 2){
-            return false;
-        }
+		Random random = new Random(); //Creating a new Random on every call on spawnPassenger() could be quite inefficient
+		// Might be good to reuse a single Random instance instead
 
-        Random random = new Random(); //Creating a new Random on every call on spawnPassenger() could be quite inefficient
-                                      // Might be good to reuse a single Random instance instead 
+		//Randomly select the station where the passengers will start
+		Station origin = stations.get(random.nextInt(stations.size()));
 
-        //Randomly select the station where the passengers will start
-        Station origin = stations.get(random.nextInt(stations.size()));
+		Station destination;
+		//keep selecting until the destination is different from origin
+		do {
+			destination = stations.get(random.nextInt(stations.size()));
+		} while (destination == origin);
+		//create and insert passenger
+		return spawnPassenger(origin, destination);
+	}
 
-        Station destination;
-        //keep selecting until the destination is different from origin
-        do{
-            destination = stations.get(random.nextInt(stations.size()));
-        } while (destination == origin);
-        //create and insert passenger
-        return spawnPassenger(origin, destination);
-    }
+	/**
+	 * checks the origin and destination Stations are seperate and that both belong to the spawner's network
+	 *
+	 * @param origin      the original station being checked
+	 * @param destination the destination station being checked
+	 * @throws NullPointerException     if origin or destination is null
+	 * @throws IllegalArgumentException if origin and destination are at the same station
+	 *                                  or if either origin/destination's station doesn't belong to the spawner's network
+	 */
+	private void checkStations(Station origin, Station destination) {
+		Objects.requireNonNull(origin);
+		Objects.requireNonNull(destination);
 
-    /**
-     * checks the origin and destination Stations are seperate and that both belong to the spawner's network
-     * @param origin the original station being checked
-     * @param destination the destination station being checked
-     * @throws NullPointerException if origin or destination is null
-     * @throws IllegalArgumentException if origin and destination are at the same station 
-     * or if either origin/destination's station doesn't belong to the spawner's network
-     */
-    private void checkStations(Station origin, Station destination) {
-        Objects.requireNonNull(origin);
-        Objects.requireNonNull(destination);
+		if (origin == destination) {
+			throw new IllegalArgumentException("Origin and destination must be different");
+		}
 
-        if(origin == destination){
-            throw new IllegalArgumentException("Origin and destination must be different");
-        }
-
-        if(!belongsToNetwork(origin) || !belongsToNetwork(destination)) {
-            throw new IllegalArgumentException("Origin and destination stations must belong to CargoSpawner's network");
-        }
-    }
-
+		if (!belongsToNetwork(origin) || !belongsToNetwork(destination)) {
+			throw new IllegalArgumentException("Origin and destination stations must belong to CargoSpawner's network");
+		}
+	}
 }

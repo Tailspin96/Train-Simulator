@@ -5,5 +5,4 @@
  * Should contain Value types and stateless helpers only
  * </p>
  */
-
 package com.trains.utils;

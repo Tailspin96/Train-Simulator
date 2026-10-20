@@ -50,7 +50,6 @@ public final class SimulationView extends JPanel {
 	 * Grid lines closer together than this on-screen get thinned out.
 	 */
 	private static final double MIN_GRID_PIXELS = 14.0;
-
 	private static final Color BACKGROUND = Color.decode("#1b2130");
 	private static final Color GRID = Color.decode("#252d3f");
 	private static final Color PATHWAY = Color.decode("#7d8799");
@@ -61,7 +60,6 @@ public final class SimulationView extends JPanel {
 	private static final Color VEHICLE_STOPPED = Color.decode("#c9d1d9");
 	private static final Color TEXT = Color.decode("#e6edf3");
 	private static final Color TEXT_DIM = Color.decode("#9aa5b1");
-
 	private final double worldSize;
 	private Simulation simulation;
 	private double scale = 4.0;
@@ -79,7 +77,6 @@ public final class SimulationView extends JPanel {
 	private boolean fitPending = true;
 	private double dragAnchorX;
 	private double dragAnchorY;
-
 	private Point hoverPoint;
 
 	/**
@@ -108,11 +105,7 @@ public final class SimulationView extends JPanel {
 
 	private static void fillOval(Graphics2D gc, double screenX, double screenY, double radius) {
 		int size = (int) Math.round(radius * 2);
-		gc.fillOval(
-				(int) Math.round(screenX - radius),
-				(int) Math.round(screenY - radius),
-				size,
-				size);
+		gc.fillOval((int) Math.round(screenX - radius), (int) Math.round(screenY - radius), size, size);
 	}
 
 	private static void fillTextCentered(Graphics2D gc, String text, double x, double y) {
@@ -165,12 +158,14 @@ public final class SimulationView extends JPanel {
 		double maxX = worldSize;
 		double maxY = worldSize;
 
-		if (!network.getNodes().isEmpty()) {
+		if (!network.getNodes()
+					.isEmpty()) {
 			minX = Double.POSITIVE_INFINITY;
 			minY = Double.POSITIVE_INFINITY;
 			maxX = Double.NEGATIVE_INFINITY;
 			maxY = Double.NEGATIVE_INFINITY;
-			for (GridPos pos : network.getNodes().keySet()) {
+			for (GridPos pos : network.getNodes()
+									  .keySet()) {
 				minX = Math.min(minX, pos.x());
 				minY = Math.min(minY, pos.y());
 				maxX = Math.max(maxX, pos.x());
@@ -260,20 +255,20 @@ public final class SimulationView extends JPanel {
 
 	private void drawPathways(Graphics2D gc, Network network) {
 		gc.setColor(PATHWAY);
-		gc.setStroke(new BasicStroke((float) Math.max(2.0, scale * 0.45),
-				BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+		gc.setStroke(new BasicStroke((float) Math.max(2.0, scale * 0.45), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 
 		for (PathwaySegment segment : network.getPathways()) {
-			GridPos start = segment.getStart().getPos();
-			GridPos end = segment.getEnd().getPos();
-			gc.drawLine(
-					(int) Math.round(toScreenX(start.x())), (int) Math.round(toScreenY(start.y())),
-					(int) Math.round(toScreenX(end.x())), (int) Math.round(toScreenY(end.y())));
+			GridPos start = segment.getStart()
+								   .getPos();
+			GridPos end = segment.getEnd()
+								 .getPos();
+			gc.drawLine((int) Math.round(toScreenX(start.x())), (int) Math.round(toScreenY(start.y())), (int) Math.round(toScreenX(end.x())), (int) Math.round(toScreenY(end.y())));
 		}
 	}
 
 	private void drawNodes(Graphics2D gc, Network network) {
-		for (Node node : network.getNodes().values()) {
+		for (Node node : network.getNodes()
+								.values()) {
 			double screenX = toScreenX(node.getX());
 			double screenY = toScreenY(node.getY());
 
@@ -293,13 +288,7 @@ public final class SimulationView extends JPanel {
 		double corner = size / 3;
 
 		gc.setColor(hold.getRemainingCapacity() <= 0 ? STATION_FULL : STATION);
-		gc.fillRoundRect(
-				(int) Math.round(screenX - size / 2),
-				(int) Math.round(screenY - size / 2),
-				(int) Math.round(size),
-				(int) Math.round(size),
-				(int) Math.round(corner),
-				(int) Math.round(corner));
+		gc.fillRoundRect((int) Math.round(screenX - size / 2), (int) Math.round(screenY - size / 2), (int) Math.round(size), (int) Math.round(size), (int) Math.round(corner), (int) Math.round(corner));
 
 		if (station.getName() != null) {
 			gc.setColor(TEXT);
@@ -307,8 +296,7 @@ public final class SimulationView extends JPanel {
 		}
 
 		gc.setColor(TEXT_DIM);
-		fillTextCentered(gc, hold.getUsedUnits() + "/" + hold.getCapacity(),
-				screenX, screenY + size / 2 + 14);
+		fillTextCentered(gc, hold.getUsedUnits() + "/" + hold.getCapacity(), screenX, screenY + size / 2 + 14);
 	}
 
 	private void drawVehicle(Graphics2D gc, Vehicle vehicle) {
@@ -330,13 +318,7 @@ public final class SimulationView extends JPanel {
 		gc.translate(screenX, screenY);
 		gc.rotate(Math.toRadians(angle));
 		gc.setColor(vehicle.isStopped() ? VEHICLE_STOPPED : VEHICLE_MOVING);
-		gc.fillRoundRect(
-				(int) Math.round(-length / 2),
-				(int) Math.round(-width / 2),
-				(int) Math.round(length),
-				(int) Math.round(width),
-				(int) Math.round(width / 2),
-				(int) Math.round(width / 2));
+		gc.fillRoundRect((int) Math.round(-length / 2), (int) Math.round(-width / 2), (int) Math.round(length), (int) Math.round(width), (int) Math.round(width / 2), (int) Math.round(width / 2));
 		gc.setTransform(previous);
 
 		// only label a train that is actually carrying something, empty labels just collide
@@ -348,8 +330,7 @@ public final class SimulationView extends JPanel {
 //			 * a label above would land on top of the station name.
 //			 */
 			gc.setColor(TEXT_DIM);
-			fillTextLeft(gc, hold.getUsedUnits() + "/" + hold.getCapacity(),
-					screenX + length / 2 + 6, screenY + 4);
+			fillTextLeft(gc, hold.getUsedUnits() + "/" + hold.getCapacity(), screenX + length / 2 + 6, screenY + 4);
 		}
 	}
 
@@ -361,9 +342,13 @@ public final class SimulationView extends JPanel {
 		return pickObject(hoverPoint.x, hoverPoint.y);
 	}
 
-	/** Do not call this method directly */
+	/**
+	 * Do not call this method directly
+	 */
 	private Object pickObject(double screenX, double screenY) {
-		if (simulation == null) { return null; }
+		if (simulation == null) {
+			return null;
+		}
 		for (Vehicle vehicle : simulation.getVehicles()) {
 			Point2D pos = vehicle.getPos();
 			double half = Math.max(8.0, Math.max(14.0, scale * 2.5) / 2);
@@ -372,10 +357,10 @@ public final class SimulationView extends JPanel {
 			}
 		}
 
-		for (Node node : simulation.getNetwork().getNodes().values()) {
-			double half = node instanceof Station
-					? Math.max(8.0, Math.max(12.0, scale * 2.0) / 2)
-					: Math.max(8.0, Math.max(5.0, scale * 0.5));
+		for (Node node : simulation.getNetwork()
+								   .getNodes()
+								   .values()) {
+			double half = node instanceof Station ? Math.max(8.0, Math.max(12.0, scale * 2.0) / 2) : Math.max(8.0, Math.max(5.0, scale * 0.5));
 			if (isWithinObjectHitbox(screenX, screenY, toScreenX(node.getX()), toScreenY(node.getY()), half)) {
 				return node;
 			}
@@ -391,23 +376,17 @@ public final class SimulationView extends JPanel {
 		switch (entity) {
 			case Vehicle vehicle -> {
 				CargoHold hold = vehicle.getCargoHold();
-				String routeStatus = vehicle.isRouteComplete()
-						? I18N.getString("sim.info.train.pendingDispatch")
-						: I18N.getString("sim.info.train.nextStop", label(vehicle.getTargetNode()));
-				return I18N.getString("sim.info.train")
-						+ "\n" + I18N.getString("sim.info.train.cargo", hold.getUsedUnits(), hold.getCapacity())
-						+ "\n" + I18N.getString("sim.info.train.speed", vehicle.getSpeed())
-						+ "\n" + routeStatus;
+				String routeStatus = vehicle.isRouteComplete() ? I18N.getString("sim.info.train.pendingDispatch") : I18N.getString("sim.info.train.nextStop", label(vehicle.getTargetNode()));
+				return I18N.getString("sim.info.train") + "\n" + I18N.getString("sim.info.train.cargo", hold.getUsedUnits(), hold.getCapacity()) + "\n" + I18N.getString("sim.info.train.speed", vehicle.getSpeed()) + "\n" + routeStatus;
 			}
 			case Station station -> {
 				CargoHold hold = station.getCargoHold();
-				return label(station)
-						+ "\n" + I18N.getString("sim.info.station.passengers.waiting", hold.getUsedUnits(), hold.getCapacity())
-						+ "\n" + I18N.getString("sim.info.tracks.connections", station.getConnections().size());
+				return label(station) + "\n" + I18N.getString("sim.info.station.passengers.waiting", hold.getUsedUnits(), hold.getCapacity()) + "\n" + I18N.getString("sim.info.tracks.connections", station.getConnections()
+																																																			.size());
 			}
 			case Node node -> {
-				return label(node)
-						+ "\n" + I18N.getString("sim.info.tracks.connections", node.getConnections().size());
+				return label(node) + "\n" + I18N.getString("sim.info.tracks.connections", node.getConnections()
+																							  .size());
 			}
 			default -> throw new IllegalStateException("Unexpected value: " + entity);
 		}
@@ -445,9 +424,7 @@ public final class SimulationView extends JPanel {
 			public void mouseMoved(MouseEvent event) {
 				hoverPoint = event.getPoint();
 				// through getHoveredObject rather than pickObject directly
-				setCursor(Cursor.getPredefinedCursor(getHoveredObject() == null
-						? Cursor.DEFAULT_CURSOR
-						: Cursor.HAND_CURSOR));
+				setCursor(Cursor.getPredefinedCursor(getHoveredObject() == null ? Cursor.DEFAULT_CURSOR : Cursor.HAND_CURSOR));
 			}
 
 			@Override

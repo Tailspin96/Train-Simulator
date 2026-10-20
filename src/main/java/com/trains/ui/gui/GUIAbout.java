@@ -2,13 +2,9 @@ package com.trains.ui.gui;
 
 import com.trains.utils.lang.I18N;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
-
+import javax.swing.*;
 
 public class GUIAbout extends GUI {
-
 	public GUIAbout(JFrame frame, GUI previous) {
 		super(frame, previous);
 	}

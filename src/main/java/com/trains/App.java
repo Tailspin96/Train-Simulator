@@ -2,9 +2,7 @@ package com.trains;
 
 import com.trains.ui.gui.GUIMainMenu;
 
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 
 public class App {
 	public static void main(String[] args) {

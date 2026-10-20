@@ -9,100 +9,102 @@ import com.trains.network.Station;
 import com.trains.routing.Route;
 import com.trains.routing.Router;
 import com.trains.utils.GridPos;
-
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class VehicleTest {
-    @Test
-    void boardPassengersMovesPassengerFromStationToVehicle(){
-        Network network = new Network();
+	@Test
+	void boardPassengersMovesPassengerFromStationToVehicle() {
+		Network network = new Network();
 
-        Station origin = network.addStation(new GridPos(0, 0), 10);
+		Station origin = network.addStation(new GridPos(0, 0), 10);
 
-        Station destination = network.addStation(new GridPos(10, 0), 10);
+		Station destination = network.addStation(new GridPos(10, 0), 10);
 
-        network.connectNodes(origin, destination);
+		network.connectNodes(origin, destination);
 
-        Router router = new Router(network);
-        Route route = router.findRoute(origin, destination);
+		Router router = new Router(network);
+		Route route = router.findRoute(origin, destination);
 
-        Itinerary itinerary = new Itinerary(route);
+		Itinerary itinerary = new Itinerary(route);
 
-        CargoHold vehicleHold = CargoHold.forType(10, CargoType.PASSENGER);
+		CargoHold vehicleHold = CargoHold.forType(10, CargoType.PASSENGER);
 
-        Vehicle vehicle = new Vehicle(itinerary, 10, 1, vehicleHold);
+		Vehicle vehicle = new Vehicle(itinerary, 10, 1, vehicleHold);
 
-        Cargo passenger = Cargo.passenger(destination.getPos());
-    
-    CargoTransfer.insertCargo(origin.getCargoHold(), passenger);
+		Cargo passenger = Cargo.passenger(destination.getPos());
 
-    int boarded = vehicle.boardPassengers(origin);
+		CargoTransfer.insertCargo(origin.getCargoHold(), passenger);
 
-    assertEquals(1, boarded);
+		int boarded = vehicle.boardPassengers(origin);
 
-    assertEquals(0, origin.getCargoHold().getUsedUnits());
+		assertEquals(1, boarded);
 
-    assertEquals(1, vehicle.getCargoHold().getUsedUnits());
-    }
+		assertEquals(0, origin.getCargoHold()
+							  .getUsedUnits());
 
-    @Test
-    void unloadPassengersRemovesPassengerAtDestination(){
-        Network network = new Network();
+		assertEquals(1, vehicle.getCargoHold()
+							   .getUsedUnits());
+	}
 
-        Station origin = network.addStation(new GridPos(0,0), 10);
-        Station destination = network.addStation(new GridPos(10, 0), 10);
+	@Test
+	void unloadPassengersRemovesPassengerAtDestination() {
+		Network network = new Network();
 
-        network.connectNodes(origin, destination);
+		Station origin = network.addStation(new GridPos(0, 0), 10);
+		Station destination = network.addStation(new GridPos(10, 0), 10);
 
-        Router router = new Router(network);
-        Route route = router.findRoute(origin, destination);
-        Itinerary itinerary = new Itinerary(route);
+		network.connectNodes(origin, destination);
 
-        CargoHold vehicleHold = CargoHold.forType(10, CargoType.PASSENGER);
+		Router router = new Router(network);
+		Route route = router.findRoute(origin, destination);
+		Itinerary itinerary = new Itinerary(route);
 
-        Vehicle vehicle = new Vehicle(itinerary, 10, 1, vehicleHold);
+		CargoHold vehicleHold = CargoHold.forType(10, CargoType.PASSENGER);
 
-        Cargo passenger = Cargo.passenger(destination.getPos());
+		Vehicle vehicle = new Vehicle(itinerary, 10, 1, vehicleHold);
 
-        CargoTransfer.insertCargo(vehicle.getCargoHold(), passenger);
+		Cargo passenger = Cargo.passenger(destination.getPos());
 
-        itinerary.advance();
+		CargoTransfer.insertCargo(vehicle.getCargoHold(), passenger);
 
-        int unload = vehicle.unloadPassengers(destination);
+		itinerary.advance();
 
-        assertEquals(1, unload);
-        assertEquals(0, vehicle.getCargoHold().getUsedUnits());
-    }
+		int unload = vehicle.unloadPassengers(destination);
 
-    @Test
-    void passengerStaysOnAtWrongStation(){
-        Network network = new Network();
+		assertEquals(1, unload);
+		assertEquals(0, vehicle.getCargoHold()
+							   .getUsedUnits());
+	}
 
-        Station origin = network.addStation(new GridPos(0, 0), 10);
-        Station middle = network.addStation(new GridPos(10, 0), 10);
-        Station destination = network.addStation(new GridPos(20, 0), 10);
+	@Test
+	void passengerStaysOnAtWrongStation() {
+		Network network = new Network();
 
-        network.connectNodes(origin, middle);
-        network.connectNodes(middle, destination);
+		Station origin = network.addStation(new GridPos(0, 0), 10);
+		Station middle = network.addStation(new GridPos(10, 0), 10);
+		Station destination = network.addStation(new GridPos(20, 0), 10);
 
-        Router router = new Router(network);
-        Route route = router.findRoute(origin, destination);
-        Itinerary itinerary = new Itinerary(route);
+		network.connectNodes(origin, middle);
+		network.connectNodes(middle, destination);
 
-        CargoHold vehicleHold = CargoHold.forType(10, CargoType.PASSENGER);
+		Router router = new Router(network);
+		Route route = router.findRoute(origin, destination);
+		Itinerary itinerary = new Itinerary(route);
 
-        Vehicle vehicle = new Vehicle(itinerary, 10, 1, vehicleHold);
+		CargoHold vehicleHold = CargoHold.forType(10, CargoType.PASSENGER);
 
-        Cargo passenger = Cargo.passenger(destination.getPos());
+		Vehicle vehicle = new Vehicle(itinerary, 10, 1, vehicleHold);
 
-        CargoTransfer.insertCargo(vehicle.getCargoHold(), passenger);
+		Cargo passenger = Cargo.passenger(destination.getPos());
 
-        int unload = vehicle.unloadPassengers(middle);
+		CargoTransfer.insertCargo(vehicle.getCargoHold(), passenger);
 
-        assertEquals(0, unload);
-        assertEquals(1, vehicle.getCargoHold().getUsedUnits());
-    }
+		int unload = vehicle.unloadPassengers(middle);
 
+		assertEquals(0, unload);
+		assertEquals(1, vehicle.getCargoHold()
+							   .getUsedUnits());
+	}
 }

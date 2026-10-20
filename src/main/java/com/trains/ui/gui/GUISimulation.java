@@ -20,7 +20,6 @@ public class GUISimulation extends GUI {
 	private static final int SIDEBAR_WIDTH = MAX_BUTTON_SIZE;
 	private static final float TITLE_SIZE = 28.0f;
 	private static final int SPEED_SCALE = 100;
-
 	private final SimulationView view;
 	private final SimulationController controller;
 	private final JButton playPauseButton;
@@ -108,23 +107,7 @@ public class GUISimulation extends GUI {
 	private void buildSidebar() {
 		JSlider speedSlider = getSpeedSlider();
 
-		addMenuItems(
-				createSectionLabel("sim.label.controls"),
-				createButtonRow(playPauseButton, createMenuButton("sim.button.reset", this::reset)),
-				speedLabel,
-				speedSlider,
-				createMenuButton("sim.button.spawn", controller::spawnPassenger),
-				createMenuButton("sim.button.spawnTrain", controller::spawnVehicle),
-				createMenuButton("sim.button.fit", view::requestFit),
-				createSectionLabel("sim.info.title"),
-				infoLabel,
-				createSectionLabel("sim.label.stats"),
-				timeLabel,
-				vehicleLabel,
-				waitingLabel,
-				onboardLabel,
-				deliveredLabel
-		);
+		addMenuItems(createSectionLabel("sim.label.controls"), createButtonRow(playPauseButton, createMenuButton("sim.button.reset", this::reset)), speedLabel, speedSlider, createMenuButton("sim.button.spawn", controller::spawnPassenger), createMenuButton("sim.button.spawnTrain", controller::spawnVehicle), createMenuButton("sim.button.fit", view::requestFit), createSectionLabel("sim.info.title"), infoLabel, createSectionLabel("sim.label.stats"), timeLabel, vehicleLabel, waitingLabel, onboardLabel, deliveredLabel);
 	}
 
 	private JSlider getSpeedSlider() {
@@ -133,8 +116,7 @@ public class GUISimulation extends GUI {
 		int value = (int) Math.round(controller.getSpeedMultiplier() * SPEED_SCALE);
 		JSlider speedSlider = new JSlider(min, max, value);
 		speedSlider.setMaximumSize(new Dimension(SIDEBAR_WIDTH, speedSlider.getPreferredSize().height));
-		speedSlider.addChangeListener(event ->
-				controller.setSpeedMultiplier(speedSlider.getValue() / (double) SPEED_SCALE));
+		speedSlider.addChangeListener(event -> controller.setSpeedMultiplier(speedSlider.getValue() / (double) SPEED_SCALE));
 		return speedSlider;
 	}
 
@@ -151,15 +133,15 @@ public class GUISimulation extends GUI {
 		 */
 		speedLabel.setText(I18N.getString("sim.label.speed", controller.getSpeedMultiplier()));
 		timeLabel.setText(I18N.getString("sim.label.time", (int) controller.getElapsedSeconds()));
-		vehicleLabel.setText(I18N.getString("sim.label.vehicles", controller.getSimulation().getVehicles().size()));
+		vehicleLabel.setText(I18N.getString("sim.label.vehicles", controller.getSimulation()
+																			.getVehicles()
+																			.size()));
 		waitingLabel.setText(I18N.getString("sim.label.waiting", controller.getWaitingUnits()));
 		onboardLabel.setText(I18N.getString("sim.label.onboard", controller.getOnboardUnits()));
 		deliveredLabel.setText(I18N.getString("sim.label.delivered", controller.getDeliveredCount()));
 
 		Object hovered = view.getHoveredObject();
-		infoLabel.setText(stringToHTML(hovered == null
-				? I18N.getString("sim.info.none")
-				: view.describeSelectedObject(hovered), "center"));
+		infoLabel.setText(stringToHTML(hovered == null ? I18N.getString("sim.info.none") : view.describeSelectedObject(hovered), "center"));
 	}
 
 	private void togglePlayPause() {
@@ -186,14 +168,16 @@ public class GUISimulation extends GUI {
 
 	private JLabel createSectionLabel(String key) {
 		JLabel label = new JLabel();
-		label.setFont(label.getFont().deriveFont(Font.BOLD, 16f));
+		label.setFont(label.getFont()
+						   .deriveFont(Font.BOLD, 16f));
 		bind(label, key);
 		return label;
 	}
 
 	private JLabel createStatLabel() {
 		JLabel label = new JLabel();
-		label.setFont(label.getFont().deriveFont(13f));
+		label.setFont(label.getFont()
+						   .deriveFont(13f));
 		return label;
 	}
 }

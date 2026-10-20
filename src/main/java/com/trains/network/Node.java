@@ -2,80 +2,94 @@ package com.trains.network;
 
 import com.trains.utils.GridPos;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * The Node Class
  * Handles the underlying logic of each individual node, holds a position, and the pathways which it is connected to.
  */
 public class Node {
-    private final GridPos pos;
-    private final ArrayList<PathwaySegment> connections = new ArrayList<>();
+	private final GridPos pos;
+	private final ArrayList<PathwaySegment> connections = new ArrayList<>();
 
+	Node(GridPos pos) {
+		this.pos = pos;
+	}
 
-    Node(GridPos pos) {
-        this.pos = pos;
-    }
-    /**
-     * Gets all Pathways connected to this Node
-     * @return List of PathwaySegments
-     */
-    public List<PathwaySegment> getConnections() {
-        return Collections.unmodifiableList(connections);
-    }
+	/**
+	 * Gets all Pathways connected to this Node
+	 *
+	 * @return List of PathwaySegments
+	 */
+	public List<PathwaySegment> getConnections() {
+		return Collections.unmodifiableList(connections);
+	}
 
-    /**
-     * Adds a connection
-     * @param segment the PathwaySegment to be added
-     */
-    void addConnection(PathwaySegment segment) {
-        connections.add(segment);
-    }
+	/**
+	 * Adds a connection
+	 *
+	 * @param segment the PathwaySegment to be added
+	 */
+	void addConnection(PathwaySegment segment) {
+		connections.add(segment);
+	}
 
-    /**
-     * Removes a connection
-     * @param segment segment to be removed
-     */
-    void removeConnection(PathwaySegment segment) {
-        connections.remove(segment);
-    }
+	/**
+	 * Removes a connection
+	 *
+	 * @param segment segment to be removed
+	 */
+	void removeConnection(PathwaySegment segment) {
+		connections.remove(segment);
+	}
 
+	/**
+	 * Gets the GridPos record of the node
+	 *
+	 * @return the GridPos record
+	 */
+	public GridPos getPos() {
+		return pos;
+	}
 
-    /**
-     * Gets the GridPos record of the node
-     * @return the GridPos record
-     */
-    public GridPos getPos() {return pos;}
+	/**
+	 * get the x coordinate of a node
+	 *
+	 * @return the x coordinate
+	 */
+	public int getX() {
+		return pos.x();
+	}
 
-    /**
-     * get the x coordinate of a node
-     * @return the x coordinate
-     */
-    public int getX() {return pos.x();}
+	/**
+	 * get the y coordinate of a node
+	 *
+	 * @return the y coordinate
+	 */
+	public int getY() {
+		return pos.y();
+	}
 
-    /**
-     * get the y coordinate of a node
-     * @return the y coordinate
-     */
-    public int getY() {return pos.y();}
+	/**
+	 * Checks if the calling node is connected to the supplied node
+	 *
+	 * @param other The node to check for
+	 * @return true if the calling node is connected to the supplied, false otherwise
+	 */
+	public boolean isConnectedTo(Node other) {
+		for (PathwaySegment segment : connections) {
+			if (segment.opposite(this) == other) {
+				return true;
+			}
+		}
+		return false;
+	}
 
-    /**
-     * Checks if the calling node is connected to the supplied node
-     * @param other The node to check for
-     * @return true if the calling node is connected to the supplied, false otherwise
-     */
-    public boolean isConnectedTo(Node other) {
-        for (PathwaySegment segment : connections) {
-            if (segment.opposite(this) == other) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-
-    @Override
-    public String toString() {
-        return this.getClass().getSimpleName() + "[" + pos + "]";
-    }
+	@Override
+	public String toString() {
+		return this.getClass()
+				   .getSimpleName() + "[" + pos + "]";
+	}
 }

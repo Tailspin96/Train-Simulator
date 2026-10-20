@@ -1,6 +1,6 @@
 package com.trains.ui.gui;
 
-import javax.swing.JFrame;
+import javax.swing.*;
 
 public class GUISettings extends GUI {
 	public GUISettings(JFrame frame, GUI previous) {
@@ -14,8 +14,6 @@ public class GUISettings extends GUI {
 
 	@Override
 	protected void drawMenuItems() {
-		addMenuItems(
-				createMenuButton("Settings", () -> openMenu(new GUILanguage(frame, this)))
-		);
+		addMenuItems(createMenuButton("Settings", () -> openMenu(new GUILanguage(frame, this))));
 	}
 }

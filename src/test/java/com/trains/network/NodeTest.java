@@ -1,19 +1,22 @@
 package com.trains.network;
+
 import com.trains.utils.GridPos;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class NodeTest {
-    private Network network;
+	private Network network;
 
-    @Test
-    void isConnectedToTest() {
-        network = new Network();
-        Node a = network.addNode(new GridPos(10, 20));
-        Node b = network.addNode(new GridPos(25, 20));
-        Node c = network.addNode(new GridPos(15, 20));
-        network.connectNodes(a, b);
-        assertTrue(a.isConnectedTo(b));
-        assertFalse(a.isConnectedTo(c));
-    }
+	@Test
+	void isConnectedToTest() {
+		network = new Network();
+		Node a = network.addNode(new GridPos(10, 20));
+		Node b = network.addNode(new GridPos(25, 20));
+		Node c = network.addNode(new GridPos(15, 20));
+		network.connectNodes(a, b);
+		assertTrue(a.isConnectedTo(b));
+		assertFalse(a.isConnectedTo(c));
+	}
 }

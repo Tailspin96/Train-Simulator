@@ -2,36 +2,21 @@ package com.trains.ui.gui;
 
 import com.trains.utils.lang.I18N;
 
-import javax.swing.AbstractButton;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
+import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class GUI extends JPanel {
-	private static final float DEFAULT_TITLE_SIZE = 24.0f;
 	protected static final int MAX_BUTTON_SIZE = 300;
+	private static final float DEFAULT_TITLE_SIZE = 24.0f;
 	protected final JFrame frame;
 	protected final JPanel buttonContainer;
-	protected float titleSize = DEFAULT_TITLE_SIZE;
-
-	protected GUI previous;
-
 	private final JLabel menuTitle;
 	private final List<Runnable> i18nRefreshers = new ArrayList<>();
 	private final Runnable localeRefresh = this::refreshI18n;
+	protected float titleSize = DEFAULT_TITLE_SIZE;
+	protected GUI previous;
 
 	public GUI(JFrame frame, GUI previous) {
 		super(new BorderLayout());
@@ -47,13 +32,13 @@ public abstract class GUI extends JPanel {
 		bind(menuTitle, getTitle());
 
 		JPanel titleContainer = new JPanel(new BorderLayout());
-titleContainer.setOpaque(false);
-titleContainer.setBorder(BorderFactory.createEmptyBorder(25, 0, 0, 0));
-titleContainer.add(menuTitle, BorderLayout.CENTER);
+		titleContainer.setOpaque(false);
+		titleContainer.setBorder(BorderFactory.createEmptyBorder(25, 0, 0, 0));
+		titleContainer.add(menuTitle, BorderLayout.CENTER);
 
-buttonContainer.add(Box.createVerticalGlue());
-drawMenuItems();
-buttonContainer.add(Box.createVerticalGlue());
+		buttonContainer.add(Box.createVerticalGlue());
+		drawMenuItems();
+		buttonContainer.add(Box.createVerticalGlue());
 
 		add(titleContainer, BorderLayout.NORTH);
 		add(buttonContainer, BorderLayout.CENTER);
@@ -67,6 +52,21 @@ buttonContainer.add(Box.createVerticalGlue());
 		}
 
 		I18N.addListener(localeRefresh);
+	}
+
+	protected static void lockButtonSize(AbstractButton button, int width) {
+		int height = button.getPreferredSize().height;
+		Dimension size = new Dimension(width, height);
+		button.setPreferredSize(size);
+		button.setMinimumSize(size);
+		button.setMaximumSize(size);
+	}
+
+	protected static String stringToHTML(String text, String align) {
+		return "<html><div style='text-align:" + align + "'>" + text.replace("&", "&amp;")
+																	.replace("<", "&lt;")
+																	.replace(">", "&gt;")
+																	.replace("\n", "<br/>") + "</div></html>";
 	}
 
 	protected abstract String getTitle();
@@ -102,14 +102,6 @@ buttonContainer.add(Box.createVerticalGlue());
 
 		buttonRow.setMaximumSize(new Dimension(MAX_BUTTON_SIZE, buttonRow.getPreferredSize().height));
 		return buttonRow;
-	}
-
-	protected static void lockButtonSize(AbstractButton button, int width) {
-		int height = button.getPreferredSize().height;
-		Dimension size = new Dimension(width, height);
-		button.setPreferredSize(size);
-		button.setMinimumSize(size);
-		button.setMaximumSize(size);
 	}
 
 	protected JButton createBackButton() {
@@ -164,15 +156,7 @@ buttonContainer.add(Box.createVerticalGlue());
 	}
 
 	private void applyTitleFont() {
-		menuTitle.setFont(menuTitle.getFont().deriveFont(Font.BOLD, titleSize));
-	}
-
-	protected static String stringToHTML(String text, String align) {
-		return "<html><div style='text-align:" + align + "'>"
-				+ text.replace("&", "&amp;")
-				.replace("<", "&lt;")
-				.replace(">", "&gt;")
-				.replace("\n", "<br/>")
-				+ "</div></html>";
+		menuTitle.setFont(menuTitle.getFont()
+								   .deriveFont(Font.BOLD, titleSize));
 	}
 }
