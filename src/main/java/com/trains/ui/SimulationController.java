@@ -15,6 +15,7 @@ import com.trains.vehicles.Vehicle;
 
 import javax.swing.Timer;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class SimulationController {
 	// Decides when the simulation runs
@@ -64,7 +65,7 @@ public class SimulationController {
 	/**
 	 * Ranks where a vehicle standing at {@code origin} should go next.
 	 * <p>
-	 * A starving station beats everything, which is the fairness bound. Otherwise it is demand
+	 * A starving station beats everything, which is the fairness bound. Otherwise, it is demand
 	 * first, and route length only ever separates otherwise equal candidates.
 	 * </p>
 	 */
@@ -134,7 +135,7 @@ public class SimulationController {
 	}
 
 	/**
-	 * Sets what to run at the end of every frame, whether or not the simulation is advancing.
+	 * Sets what to run at the end of every frame, whether the simulation is advancing.
 	 * <p>
 	 * This is how rendering gets driven without the controller having to know about the view.
 	 * </p>
@@ -311,7 +312,7 @@ public class SimulationController {
 	}
 
 	/**
-	 * The station side of a tick, which Simulation.tick does not do itself.
+	 * The station side of a tick, which Simulation. Tick does not do itself.
 	 */
 	private void afterTick(double dt) {
 		// safe to iterate: nothing in here adds or removes vehicles
@@ -422,32 +423,40 @@ public class SimulationController {
 		Collections.shuffle(candidates, random);
 		candidates.sort(BY_PRIORITY);
 
-		vehicle.dispatch(candidates.get(0)
+		vehicle.dispatch(candidates.getFirst()
 								   .route());
 	}
 
 	private List<Candidate> scoreCandidates(Node origin) {
-		List<Candidate> candidates = new ArrayList<>();
+		Map<GridPos, Integer> demand = demandByDestination(origin);
 
-		for (Station station : stations()) {
-			if (station == origin) {
-				continue;
-			}
-			/*
-			 * Routing every candidate up front both supplies the length for the tiebreak and drops
-			 * anything in another component, which is what a partially connected network needs.
-			 * A handful of A* runs once per dwell is not worth optimising.
-			 */
-			Route route = router.findRoute(origin, station);
-			if (route == null) {
-				continue;
-			}
-			double staleness = elapsedSeconds - lastServed.getOrDefault(station.getPos(), 0.0);
-			candidates.add(new Candidate(station, route, demandFor(origin, station), station.getCargoHold()
-																							.getUsedUnits(), staleness, staleness > STARVATION_SECONDS));
+		return stations().parallelStream()
+						 .filter(station -> station != origin)
+						 .map(station -> score(origin, station, demand))
+						 .flatMap(Optional::stream)
+						 .collect(Collectors.toCollection(ArrayList::new));
+	}
+
+	private Map<GridPos, Integer> demandByDestination(Node origin) {
+		if (!(origin instanceof Station here)) {
+			return Map.of();
 		}
 
-		return candidates;
+		return here.getCargoHold()
+				   .getContents()
+				   .stream()
+				   .collect(Collectors.groupingBy(Cargo::getDestination, Collectors.summingInt(Cargo::getUnits)));
+	}
+
+	private Optional<Candidate> score(Node origin, Station station, Map<GridPos, Integer> demand) {
+		Route route = router.findRoute(origin, station);
+		if (route == null) {
+			return Optional.empty();
+		}
+
+		double staleness = elapsedSeconds - lastServed.getOrDefault(station.getPos(), 0.0);
+		return Optional.of(new Candidate(station, route, demand.getOrDefault(station.getPos(), 0), station.getCargoHold()
+																										  .getUsedUnits(), staleness, staleness > STARVATION_SECONDS));
 	}
 
 	/**
