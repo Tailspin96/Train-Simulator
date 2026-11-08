@@ -13,7 +13,7 @@ public class PathwaySegment {
 		this.start = start;
 		this.end = end;
 		this.length = start.getPos()
-						   .distanceTo(end.getPos());
+				.distanceTo(end.getPos());
 	}
 
 	/**

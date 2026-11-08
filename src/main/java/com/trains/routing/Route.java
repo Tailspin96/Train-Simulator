@@ -35,8 +35,8 @@ public final class Route {
 		this.destination = destination;
 		this.segments = segments;
 		this.totalLength = segments.stream()
-								   .mapToDouble(PathwaySegment::getLength)
-								   .sum();
+				.mapToDouble(PathwaySegment::getLength)
+				.sum();
 	}
 
 	public Node getOrigin() {

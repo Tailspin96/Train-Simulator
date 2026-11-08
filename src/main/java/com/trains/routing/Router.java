@@ -32,8 +32,8 @@ public class Router {
 		// Guard against nodes that don't actually belong to this Router's network -
 		// without this, we'd silently fail to find a route instead of saying why.
 		if (!network.getNodes()
-					.containsValue(origin) || !network.getNodes()
-													  .containsValue(destination)) {
+				.containsValue(origin) || !network.getNodes()
+				.containsValue(destination)) {
 			throw new IllegalArgumentException("Origin and destination must belong to this Router's network");
 		}
 
@@ -63,7 +63,7 @@ public class Router {
 
 		while (!openSet.isEmpty()) {
 			Node current = openSet.poll()
-								  .node();
+					.node();
 
 			// Java's PriorityQueue can't update an entry's priority in place, so when we
 			// find

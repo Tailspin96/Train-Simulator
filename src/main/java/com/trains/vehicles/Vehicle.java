@@ -104,13 +104,13 @@ public class Vehicle {
 	public double getX() {
 		if (itinerary.isComplete()) {
 			return itinerary.getEntryNode()
-							.getX();
+					.getX();
 		}
 		double t = distanceAlong / itinerary.getCurrentSegment()
-											.getLength();
+				.getLength();
 		return lerp(itinerary.getEntryNode()
-							 .getX(), itinerary.getTargetNode()
-											   .getX(), t);
+				.getX(), itinerary.getTargetNode()
+				.getX(), t);
 	}
 
 	/**
@@ -121,13 +121,13 @@ public class Vehicle {
 	public double getY() {
 		if (itinerary.isComplete()) {
 			return itinerary.getEntryNode()
-							.getY();
+					.getY();
 		}
 		double t = distanceAlong / itinerary.getCurrentSegment()
-											.getLength();
+				.getLength();
 		return lerp(itinerary.getEntryNode()
-							 .getY(), itinerary.getTargetNode()
-											   .getY(), t);
+				.getY(), itinerary.getTargetNode()
+				.getY(), t);
 	}
 
 	/**
@@ -138,14 +138,14 @@ public class Vehicle {
 	public Point2D getPos() {
 		if (itinerary.isComplete()) {
 			return itinerary.getEntryNode()
-							.getPos()
-							.toPoint2D();
+					.getPos()
+					.toPoint2D();
 		}
 		double t = distanceAlong / itinerary.getCurrentSegment()
-											.getLength();
+				.getLength();
 		return lerp(itinerary.getEntryNode()
-							 .getPos(), itinerary.getTargetNode()
-												 .getPos(), t);
+				.getPos(), itinerary.getTargetNode()
+				.getPos(), t);
 	}
 
 	public void update(double dt) { // this is just an example of what we should be doing, it needs to be edited.
@@ -275,7 +275,7 @@ public class Vehicle {
 
 		//check all the cargo currently waiting at the station
 		for (Cargo cargo : station.getCargoHold()
-								  .getContents()) {
+				.getContents()) {
 			if (cargo.getType() != CargoType.PASSENGER) {
 				continue;
 			}

@@ -134,8 +134,8 @@ public class GUISimulation extends GUI {
 		speedLabel.setText(I18N.getString("sim.label.speed", controller.getSpeedMultiplier()));
 		timeLabel.setText(I18N.getString("sim.label.time", (int) controller.getElapsedSeconds()));
 		vehicleLabel.setText(I18N.getString("sim.label.vehicles", controller.getSimulation()
-																			.getVehicles()
-																			.size()));
+				.getVehicles()
+				.size()));
 		waitingLabel.setText(I18N.getString("sim.label.waiting", controller.getWaitingUnits()));
 		onboardLabel.setText(I18N.getString("sim.label.onboard", controller.getOnboardUnits()));
 		deliveredLabel.setText(I18N.getString("sim.label.delivered", controller.getDeliveredCount()));
@@ -169,7 +169,7 @@ public class GUISimulation extends GUI {
 	private JLabel createSectionLabel(String key) {
 		JLabel label = new JLabel();
 		label.setFont(label.getFont()
-						   .deriveFont(Font.BOLD, 16f));
+				.deriveFont(Font.BOLD, 16f));
 		bind(label, key);
 		return label;
 	}
@@ -177,7 +177,7 @@ public class GUISimulation extends GUI {
 	private JLabel createStatLabel() {
 		JLabel label = new JLabel();
 		label.setFont(label.getFont()
-						   .deriveFont(13f));
+				.deriveFont(13f));
 		return label;
 	}
 }

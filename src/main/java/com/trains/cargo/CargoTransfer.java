@@ -48,7 +48,7 @@ public final class CargoTransfer {
 		Objects.requireNonNull(cargo);
 		Objects.requireNonNull(location);
 		if (!cargo.getDestination()
-				  .equals(location)) {
+				.equals(location)) {
 			return false; // not there yet, so it stays on board
 		}
 		return source.removeCargo(cargo);

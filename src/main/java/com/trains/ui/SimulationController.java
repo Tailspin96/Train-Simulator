@@ -70,15 +70,15 @@ public class SimulationController {
 	 * </p>
 	 */
 	private static final Comparator<Candidate> BY_PRIORITY = Comparator.comparing(Candidate::starving)
-																	   .reversed()
-																	   .thenComparing(Comparator.comparingInt(Candidate::demand)
-																								.reversed())
-																	   .thenComparing(Comparator.comparingInt(Candidate::pickup)
-																								.reversed())
-																	   .thenComparing(Comparator.comparingDouble(Candidate::staleness)
-																								.reversed())
-																	   .thenComparingDouble(candidate -> candidate.route()
-																												  .getTotalLength());
+			.reversed()
+			.thenComparing(Comparator.comparingInt(Candidate::demand)
+					.reversed())
+			.thenComparing(Comparator.comparingInt(Candidate::pickup)
+					.reversed())
+			.thenComparing(Comparator.comparingDouble(Candidate::staleness)
+					.reversed())
+			.thenComparingDouble(candidate -> candidate.route()
+					.getTotalLength());
 	private final Simulation sim;
 	private final Router router;
 	/*
@@ -260,9 +260,9 @@ public class SimulationController {
 	 */
 	public int getWaitingUnits() {
 		return stations().stream()
-						 .mapToInt(station -> station.getCargoHold()
-													 .getUsedUnits())
-						 .sum();
+				.mapToInt(station -> station.getCargoHold()
+						.getUsedUnits())
+				.sum();
 	}
 
 	/**
@@ -270,10 +270,10 @@ public class SimulationController {
 	 */
 	public int getOnboardUnits() {
 		return sim.getVehicles()
-				  .stream()
-				  .mapToInt(vehicle -> vehicle.getCargoHold()
-											  .getUsedUnits())
-				  .sum();
+				.stream()
+				.mapToInt(vehicle -> vehicle.getCargoHold()
+						.getUsedUnits())
+				.sum();
 	}
 
 	private void pulse(long now) {
@@ -395,7 +395,7 @@ public class SimulationController {
 		 * deliverCargo does the destination check itself rather than us repeating it here.
 		 */
 		for (Cargo cargo : vehicle.getCargoHold()
-								  .getContents()) {
+				.getContents()) {
 			if (CargoTransfer.deliverCargo(vehicle.getCargoHold(), cargo, station.getPos())) {
 				delivered += cargo.getUnits();
 			}
@@ -424,17 +424,17 @@ public class SimulationController {
 		candidates.sort(BY_PRIORITY);
 
 		vehicle.dispatch(candidates.getFirst()
-								   .route());
+				.route());
 	}
 
 	private List<Candidate> scoreCandidates(Node origin) {
 		Map<GridPos, Integer> demand = demandByDestination(origin);
 
 		return stations().parallelStream()
-						 .filter(station -> station != origin)
-						 .map(station -> score(origin, station, demand))
-						 .flatMap(Optional::stream)
-						 .collect(Collectors.toCollection(ArrayList::new));
+				.filter(station -> station != origin)
+				.map(station -> score(origin, station, demand))
+				.flatMap(Optional::stream)
+				.collect(Collectors.toCollection(ArrayList::new));
 	}
 
 	private Map<GridPos, Integer> demandByDestination(Node origin) {
@@ -443,9 +443,9 @@ public class SimulationController {
 		}
 
 		return here.getCargoHold()
-				   .getContents()
-				   .stream()
-				   .collect(Collectors.groupingBy(Cargo::getDestination, Collectors.summingInt(Cargo::getUnits)));
+				.getContents()
+				.stream()
+				.collect(Collectors.groupingBy(Cargo::getDestination, Collectors.summingInt(Cargo::getUnits)));
 	}
 
 	private Optional<Candidate> score(Node origin, Station station, Map<GridPos, Integer> demand) {
@@ -456,7 +456,7 @@ public class SimulationController {
 
 		double staleness = elapsedSeconds - lastServed.getOrDefault(station.getPos(), 0.0);
 		return Optional.of(new Candidate(station, route, demand.getOrDefault(station.getPos(), 0), station.getCargoHold()
-																										  .getUsedUnits(), staleness, staleness > STARVATION_SECONDS));
+				.getUsedUnits(), staleness, staleness > STARVATION_SECONDS));
 	}
 
 	/**
@@ -472,22 +472,22 @@ public class SimulationController {
 			return 0;
 		}
 		return originStation.getCargoHold()
-							.getContents()
-							.stream()
-							.filter(cargo -> cargo.getDestination()
-												  .equals(destination.getPos()))
-							.mapToInt(Cargo::getUnits)
-							.sum();
+				.getContents()
+				.stream()
+				.filter(cargo -> cargo.getDestination()
+						.equals(destination.getPos()))
+				.mapToInt(Cargo::getUnits)
+				.sum();
 	}
 
 	private List<Station> stations() {
 		return sim.getNetwork()
-				  .getNodes()
-				  .values()
-				  .stream()
-				  .filter(Station.class::isInstance)
-				  .map(Station.class::cast)
-				  .toList();
+				.getNodes()
+				.values()
+				.stream()
+				.filter(Station.class::isInstance)
+				.map(Station.class::cast)
+				.toList();
 	}
 
 	/**
@@ -495,9 +495,9 @@ public class SimulationController {
 	 */
 	private List<Station> connectedStations() {
 		return stations().stream()
-						 .filter(station -> !station.getConnections()
-													.isEmpty())
-						 .toList();
+				.filter(station -> !station.getConnections()
+						.isEmpty())
+				.toList();
 	}
 
 	public boolean spawnVehicle() {

@@ -49,7 +49,7 @@ public final class Network {
 		Node existing = nodes.putIfAbsent(node.getPos(), node);
 		if (existing != null) { // if there is an object already in the map containing node.getPos(), it will be returned by putIfAbsent(), else it returns null if the item has been successfully put in the map
 			throw new IllegalArgumentException(existing.getClass()
-													   .getSimpleName() + " already exists at " + node.getPos());
+					.getSimpleName() + " already exists at " + node.getPos());
 		}
 		return node;
 	}
@@ -69,7 +69,7 @@ public final class Network {
 			throw new IllegalArgumentException("Duplicate positions supplied");
 		}
 		if (distinct.stream()
-					.anyMatch(this::isNodeAt)) {
+				.anyMatch(this::isNodeAt)) {
 			throw new IllegalArgumentException("Some positions supplied already have nodes on them");
 		}
 		for (GridPos pos : positions) {
@@ -168,9 +168,9 @@ public final class Network {
 
 	private void unlink(PathwaySegment segment) {
 		segment.getStart()
-			   .removeConnection(segment);
+				.removeConnection(segment);
 		segment.getEnd()
-			   .removeConnection(segment);
+				.removeConnection(segment);
 		pathways.remove(segment);
 	}
 

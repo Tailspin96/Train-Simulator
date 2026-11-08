@@ -159,13 +159,13 @@ public final class SimulationView extends JPanel {
 		double maxY = worldSize;
 
 		if (!network.getNodes()
-					.isEmpty()) {
+				.isEmpty()) {
 			minX = Double.POSITIVE_INFINITY;
 			minY = Double.POSITIVE_INFINITY;
 			maxX = Double.NEGATIVE_INFINITY;
 			maxY = Double.NEGATIVE_INFINITY;
 			for (GridPos pos : network.getNodes()
-									  .keySet()) {
+					.keySet()) {
 				minX = Math.min(minX, pos.x());
 				minY = Math.min(minY, pos.y());
 				maxX = Math.max(maxX, pos.x());
@@ -259,16 +259,16 @@ public final class SimulationView extends JPanel {
 
 		for (PathwaySegment segment : network.getPathways()) {
 			GridPos start = segment.getStart()
-								   .getPos();
+					.getPos();
 			GridPos end = segment.getEnd()
-								 .getPos();
+					.getPos();
 			gc.drawLine((int) Math.round(toScreenX(start.x())), (int) Math.round(toScreenY(start.y())), (int) Math.round(toScreenX(end.x())), (int) Math.round(toScreenY(end.y())));
 		}
 	}
 
 	private void drawNodes(Graphics2D gc, Network network) {
 		for (Node node : network.getNodes()
-								.values()) {
+				.values()) {
 			double screenX = toScreenX(node.getX());
 			double screenY = toScreenY(node.getY());
 
@@ -358,8 +358,8 @@ public final class SimulationView extends JPanel {
 		}
 
 		for (Node node : simulation.getNetwork()
-								   .getNodes()
-								   .values()) {
+				.getNodes()
+				.values()) {
 			double half = node instanceof Station ? Math.max(8.0, Math.max(12.0, scale * 2.0) / 2) : Math.max(8.0, Math.max(5.0, scale * 0.5));
 			if (isWithinObjectHitbox(screenX, screenY, toScreenX(node.getX()), toScreenY(node.getY()), half)) {
 				return node;
@@ -382,11 +382,11 @@ public final class SimulationView extends JPanel {
 			case Station station -> {
 				CargoHold hold = station.getCargoHold();
 				return label(station) + "\n" + I18N.getString("sim.info.station.passengers.waiting", hold.getUsedUnits(), hold.getCapacity()) + "\n" + I18N.getString("sim.info.tracks.connections", station.getConnections()
-																																																			.size());
+						.size());
 			}
 			case Node node -> {
 				return label(node) + "\n" + I18N.getString("sim.info.tracks.connections", node.getConnections()
-																							  .size());
+						.size());
 			}
 			default -> throw new IllegalStateException("Unexpected value: " + entity);
 		}

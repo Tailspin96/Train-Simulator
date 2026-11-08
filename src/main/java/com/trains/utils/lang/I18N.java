@@ -5,7 +5,10 @@ import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public final class I18N {
-	public static final Set<Locale> availableLocales = Set.of(Locale.of("en", "AU"));
+	public static final Set<Locale> availableLocales = Set.of(
+			Locale.of("en", "AU"),
+			Locale.of("el", "GR")
+	);
 	private static final List<Runnable> listeners = new CopyOnWriteArrayList<>();
 	private static final Locale defaultLocale = Locale.of("en", "AU");
 	private static Locale locale;

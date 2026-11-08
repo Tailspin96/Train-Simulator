@@ -120,7 +120,7 @@ public final class RandomScenario {
 			attempts++;
 			GridPos pos = new GridPos(random.nextInt(gridCols) * CELL, random.nextInt(gridRows) * CELL);
 			if (network.getNodes()
-					   .containsKey(pos)) {
+					.containsKey(pos)) {
 				continue; // taken, try another cell
 			}
 
@@ -167,10 +167,10 @@ public final class RandomScenario {
 	 * </p>
 	 */
 	private static void connectManhattan(Network network, Random random, Node a, Node b) {
-		int ax = (int) a.getX();
-		int ay = (int) a.getY();
-		int bx = (int) b.getX();
-		int by = (int) b.getY();
+		int ax = a.getX();
+		int ay = a.getY();
+		int bx = b.getX();
+		int by = b.getY();
 
 		if (ax == bx || ay == by) {
 			// Check for no existing connection
@@ -217,7 +217,7 @@ public final class RandomScenario {
 	 */
 	private static Node junctionAt(Network network, GridPos pos) {
 		Node existing = network.getNodes()
-							   .get(pos);
+				.get(pos);
 		if (existing != null) {
 			return existing; // routing a track through an existing station/junction is fine
 		}

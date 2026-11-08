@@ -66,11 +66,11 @@ public final class CargoSpawner {
 	 */
 	private List<Station> getStations() {
 		return network.getNodes()
-					  .values()
-					  .stream()
-					  .filter(Station.class::isInstance)
-					  .map(Station.class::cast)
-					  .toList();
+				.values()
+				.stream()
+				.filter(Station.class::isInstance)
+				.map(Station.class::cast)
+				.toList();
 	}
 
 	/**
@@ -80,7 +80,7 @@ public final class CargoSpawner {
 	 */
 	private boolean belongsToNetwork(Station station) {
 		return network.getNodes()
-					  .containsValue(station);
+				.containsValue(station);
 	}
 
 	/**

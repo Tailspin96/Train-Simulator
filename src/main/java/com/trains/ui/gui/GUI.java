@@ -17,6 +17,7 @@ public abstract class GUI extends JPanel {
 	private final Runnable localeRefresh = this::refreshI18n;
 	protected float titleSize = DEFAULT_TITLE_SIZE;
 	protected GUI previous;
+	private int menuItemCount = 0;
 
 	public GUI(JFrame frame, GUI previous) {
 		super(new BorderLayout());
@@ -40,16 +41,20 @@ public abstract class GUI extends JPanel {
 		drawMenuItems();
 		buttonContainer.add(Box.createVerticalGlue());
 
+		JPanel bottomContainer = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		bottomContainer.setOpaque(false);
+		bottomContainer.setBorder(BorderFactory.createEmptyBorder(0, 0, 50, 0));
+		if (previous != null) {
+			bottomContainer.add(createBackButton());
+		}
+
+		int edgeHeight = Math.max(titleContainer.getPreferredSize().height, bottomContainer.getPreferredSize().height);
+		titleContainer.setPreferredSize(new Dimension(0, edgeHeight));
+		bottomContainer.setPreferredSize(new Dimension(0, edgeHeight));
+
 		add(titleContainer, BorderLayout.NORTH);
 		add(buttonContainer, BorderLayout.CENTER);
-
-		if (previous != null) {
-			JPanel backButtonContainer = new JPanel(new FlowLayout(FlowLayout.CENTER));
-			backButtonContainer.setOpaque(false);
-			backButtonContainer.setBorder(BorderFactory.createEmptyBorder(0, 0, 50, 0));
-			backButtonContainer.add(createBackButton());
-			add(backButtonContainer, BorderLayout.SOUTH);
-		}
+		add(bottomContainer, BorderLayout.SOUTH);
 
 		I18N.addListener(localeRefresh);
 	}
@@ -64,9 +69,9 @@ public abstract class GUI extends JPanel {
 
 	protected static String stringToHTML(String text, String align) {
 		return "<html><div style='text-align:" + align + "'>" + text.replace("&", "&amp;")
-																	.replace("<", "&lt;")
-																	.replace(">", "&gt;")
-																	.replace("\n", "<br/>") + "</div></html>";
+				.replace("<", "&lt;")
+				.replace(">", "&gt;")
+				.replace("\n", "<br/>") + "</div></html>";
 	}
 
 	protected abstract String getTitle();
@@ -88,16 +93,24 @@ public abstract class GUI extends JPanel {
 	}
 
 	protected JPanel createButtonRow(JButton... buttons) {
-		int spacing = 15;
+		int spacing = 16;
 		JPanel buttonRow = new JPanel(new FlowLayout(FlowLayout.CENTER, spacing, 0));
+		buttonRow.setLayout(new BoxLayout(buttonRow, BoxLayout.X_AXIS));
 		buttonRow.setOpaque(false);
 		buttonRow.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-		int gaps = buttons.length + 1;
-		int buttonWidth = (MAX_BUTTON_SIZE - spacing * gaps) / buttons.length;
-		for (JButton button : buttons) {
-			lockButtonSize(button, buttonWidth);
-			buttonRow.add(button);
+		int available = MAX_BUTTON_SIZE - spacing * (buttons.length - 1);
+		int baseWidth = available / buttons.length;
+		int remainder = available % buttons.length;
+
+		for (int i = 0; i < buttons.length; i++) {
+			if (i > 0) {
+				buttonRow.add(Box.createHorizontalStrut(spacing));
+			}
+
+			int width = baseWidth + (i < remainder ? 1 : 0);
+			lockButtonSize(buttons[i], width);
+			buttonRow.add(buttons[i]);
 		}
 
 		buttonRow.setMaximumSize(new Dimension(MAX_BUTTON_SIZE, buttonRow.getPreferredSize().height));
@@ -110,11 +123,12 @@ public abstract class GUI extends JPanel {
 
 	protected void addMenuItems(JComponent... items) {
 		for (JComponent item : items) {
-			if (buttonContainer.getComponentCount() > 0) {
+			if (menuItemCount > 0) {
 				buttonContainer.add(Box.createRigidArea(new Dimension(0, 15)));
 			}
 			item.setAlignmentX(Component.CENTER_ALIGNMENT);
 			buttonContainer.add(item);
+			menuItemCount++;
 		}
 	}
 
@@ -157,6 +171,6 @@ public abstract class GUI extends JPanel {
 
 	private void applyTitleFont() {
 		menuTitle.setFont(menuTitle.getFont()
-								   .deriveFont(Font.BOLD, titleSize));
+				.deriveFont(Font.BOLD, titleSize));
 	}
 }

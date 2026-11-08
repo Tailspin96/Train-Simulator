@@ -148,7 +148,7 @@ public final class CargoHold {
 
 	public boolean verifyIntegrity() {
 		return usedUnits == contents.stream()
-									.mapToInt(Cargo::getUnits)
-									.sum();
+				.mapToInt(Cargo::getUnits)
+				.sum();
 	}
 }

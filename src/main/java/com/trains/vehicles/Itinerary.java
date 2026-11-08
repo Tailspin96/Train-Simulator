@@ -28,7 +28,7 @@ public final class Itinerary {
 	 */
 	public boolean isComplete() {
 		return leg >= route.getSegments()
-						   .size();
+				.size();
 	}
 
 	/**
@@ -41,7 +41,7 @@ public final class Itinerary {
 			throw new IllegalStateException("Route is complete");
 		}
 		return route.getSegments()
-					.get(leg);
+				.get(leg);
 	}
 
 	public Node getDestinationNode() {
@@ -78,14 +78,14 @@ public final class Itinerary {
 		Node current = entryNode;
 
 		for (int i = leg; i < route.getSegments()
-								   .size(); i++) {
+				.size(); i++) {
 			PathwaySegment segment = route.getSegments()
-										  .get(i);
+					.get(i);
 
 			current = segment.opposite(current);
 
 			if (current.getPos()
-					   .equals(destination)) {
+					.equals(destination)) {
 				return true;
 			}
 		}
